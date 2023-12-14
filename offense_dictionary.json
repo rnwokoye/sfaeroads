@@ -1,0 +1,12 @@
+
+{
+    "Choose Option": "",
+    "Speeding": 100,
+    "Disobeying Red Light": 200,
+    "Illegal Parking": 250,
+    "Driving Without License": 300,
+    "Drunk_Driving": 400,
+    "Overtaking": 250,
+    "Using handset": 500
+    
+}
