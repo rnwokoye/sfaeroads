@@ -20,12 +20,6 @@ from sqlalchemy import (
 
 import admin_page
 
-
-# import psycopg2
-# from psycopg2.extensions import register_adapter, AsIs
-
-# register_adapter(np.int64, AsIs)
-
 conn = st.connection("cockroachdb", type="sql")
 
 # App Title
@@ -191,7 +185,6 @@ def run_program(logged_on_officer: str) -> dict:
 def insert_offense(offense_details: pd.DataFrame):
     # Hard coded because data_frame columns are different form actual table columns
 
-    st.write(offense_details)
     offense_details = offense_details.astype(
         {"Fine Amount": "int", "Date Issued": "str", "Due Date": "str"}
     )
@@ -219,105 +212,12 @@ def insert_offense(offense_details: pd.DataFrame):
     VALUES (:tkt_number, :first_name, :last_name, :phone_number, :offence_type, :fine_amount, :license_plate, :date_issued, :due_date, :location, :description, :officer_name);
     """
     )
-    st.write(query)
-    st.write(offense_details)
-    print(query)
-    print(offense_details)
 
     # execute the query
     with conn.session as s:
         s.execute(query, offense_details)
-    # #     s.commit()
+        s.commit()
     return True
-
-
-# def insert_offense(offense_details: pd.DataFrame):
-#     # Hard coded because data_frame columns are different form actual table columns
-#     # Database Columns
-#     st.write(offense_details)
-
-#     offense_details = offense_details.astype(
-#         {"Fine Amount": "int", "Date Issued": "str", "Due Date": "str"}
-#     )
-
-#     # db_cols = [
-#     #     "tkt_number",
-#     #     "first_name",
-#     #     "last_name",
-#     #     "phone_number",
-#     #     "offence_type",
-#     #     "fine_amount",
-#     #     "license_plate",
-#     #     "date_issued",
-#     #     "due_date",
-#     #     "location",
-#     #     "description",
-#     #     "officer_name",
-#     # ]
-
-#     local_db_cols = [
-#         "tkt_number",
-#         "first_name",
-#         "last_name",
-#         "phone_number",
-#         "offence_type",
-#         "fine_amount",
-#         "license_plate",
-#         "date_issued",
-#         "due_date",
-#         "location",
-#         "description",
-#         "officer_name",
-#     ]
-
-#     df_cols = [
-#         "First Name",
-#         "Last Name",
-#         "Offense",
-#         "Fine Amount",
-#         "License Plate",
-#         "Date Issued",
-#         "Due Date",
-#         "Phone Number",
-#         "Location",
-#         "Description",
-#         "Officer Name",
-#         "tkt_number",
-#     ]
-
-#     # offense_details = offense_details[df_cols]
-
-#     offense_details = offense_details.to_dict(orient="records")[0]
-
-#     cols = ", ".join(local_db_cols)
-
-#     # query = text(f"""INSERT INTO traffic_tickets ({cols}) VALUES ('{vals});""")
-#     query = """
-#     INSERT INTO traffic_tickets (tkt_number, first_name, last_name, phone_number, offence_type, fine_amount, license_plate, date_issued, due_date, location, description, officer_name)
-#     VALUES (:tkt_number, :first_name, :last_name, :phone_number, :offence_type, :fine_amount, :license_plate, :date_issued, :due_date, :location, :description, :officer_name);
-#     """
-
-#     # query = text(
-#     #     f"""
-#     # INSERT INTO traffic_tickets (tkt_number, first_name, last_name, phone_number, offence_type, fine_amount, license_plate, date_issued, due_date, location, description, officer_name)
-#     # VALUES {vals};
-#     # """
-#     # )
-
-#     # values_list = tuple(list(offense_details.values[0]))
-
-#     # st.write(query)
-#     # st.write(vals)
-#     st.write(query)
-#     st.write(offense_details)
-#     print(query)
-#     print(offense_details)
-
-#     # execute the query
-#     with conn.session as s:
-#         s.execute(query, offense_details)
-#     # #     s.commit()
-#     return True
 
 
 def main():
@@ -336,83 +236,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-    # To Do:
-    # Convert your dataframe to a dictionary
-    # Iterate the dict for k in my_dict:
-    # s.execute (insert_stament)
-    """
-    pet_owners = {'jerry': 'fish', 'barbara': 'cat', 'alex': 'puppy'}
-    for k in pet_owners:
-        s.execute(
-            'INSERT INTO pet_owners (person, pet) VALUES (:owner, :pet);',
-            params=dict(owner=k, pet=pet_owners[k])
-        )
-    s.commit()
-    """
-
-    # # DataFrame Columns
-    # # db_cols = [
-    # #     "first_name",
-    # #     "last_name",
-    # #     "offence_type",
-    # #     "fine_amount",
-    # #     "license_plate",
-    # #     "date_issued",
-    # #     "due_date",
-    # #     "phone_number",
-    # #     "location",
-    # #     "description",
-    # #     "officer_name",
-    # #     "tkt_number",
-    # # ]
-    # # Convert 'Fine Amount' to integer
-    # fine_amount = int(offense_details["Fine Amount"].iloc[0])
-    # offense_details["Fine Amount"] = fine_amount
-
-    # # Construct the SQL query
-    # # placeholders = ", ".join(["%s" for _ in db_cols])
-
-    # # values = tuple(list(offense_details.squeeze()))
-    # # print(values)
-
-    # data = tuple(list(offense_details.values[0]))
-    # print("Vales are xxxx ", data)
-
-    # # query = f"INSERT INTO traffic_tickets ({', '.join(db_cols)}) VALUES {values};"
-    # query = insert(my_table).values(data)
-    # print("One", query)
-
-    # # Extract values in the order of db_cols, based on df_cols mapping
-    # # values = tuple(offense_details[col].iloc[0] for col in df_cols)
-    # # values = offense_details.to_dict(orient="records")[0]
-
-    # # Execute the query
-    # with conn.session as s:
-    #     s.execute(query)
-    # #     # s.commit()
-
-    # return True
-
-    # # query = text(
-    # #     f"""INSERT INTO traffic_tickets ({', '.join([i for i in cols])}) VALUES %s;"""
-    # # )
-    # # offense_details["Fine Amount"] = offense_details["Fine Amount"].astype("int")
-    # # st.write(offense_details.dtypes)
-
-    # # values = tuple(offense_details.iloc[0])
-
-    # # values_tuple = tuple(values)
-    # # values_list = [values_tuple]
-
-    # # st.write(query)
-    # # st.write(values_tuple)
-    # # st.write(values_list)
-    # # print(query)
-    # # print(values)
-
-    # # with conn.session as s:
-    # #     s.execute(query, values_list)
-    # # s.commit()
-
-    # # End Testing Here
