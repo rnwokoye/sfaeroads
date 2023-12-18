@@ -54,7 +54,7 @@ def filter_dataframe(res_df: pd.DataFrame) -> pd.DataFrame:
         # to_filter_columns = st.multiselect("Filter dataframe on", res_df.columns)
         to_filter_columns = st.multiselect(
             "Filter dataframe on",
-            ["tkt_number", "last_name", "phone_number", "officer_name"],
+            ["tkt_number", "last_name", "phone_number", "officer_name", "status"],
         )
         for column in to_filter_columns:
             left, right = st.columns((1, 20))
@@ -146,7 +146,7 @@ def display_data():
         st.subheader("A View For All Tickets")
         st.write(f"Today's date is {date}")
         filtered_data = filter_dataframe(data)
-        styled_data = filtered_data.style.applymap(style_data_row, subset=["status"])
+        styled_data = filtered_data.style.map(style_data_row, subset=["status"])
         st.dataframe(styled_data)
 
     with tab2:

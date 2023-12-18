@@ -55,11 +55,12 @@ def check_password():
         ):
             st.session_state["password_correct"] = True
             st.session_state["username"] = st.session_state["username"]
+            st.session_state["name"] = st.secrets["credentials"]["names"][
+                st.session_state["username"]
+            ]
             del st.session_state["password"]  # Don't store the username or password.
             st.session_state.session_data["username"] = st.session_state["username"]
-
-            # return user_name
-            # del st.session_state["username"]
+            print(f"Names are {st.session_state.name}")
         else:
             st.session_state["password_correct"] = False
 
@@ -223,8 +224,9 @@ def insert_offense(offense_details: pd.DataFrame):
 def main():
     check_password()
     username = st.session_state.session_data.get("username")
+    name = st.session_state.name
     if username:
-        st.write(f"Welcome {username}")
+        st.write(f"Welcome {name}")
         if st.button("log_out", on_click=log_out):
             log_out()
         # Check if the username is an admin or a regular user
