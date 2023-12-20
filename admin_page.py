@@ -137,13 +137,19 @@ def get_tickets() -> pd.DataFrame:
     return res_df, today
 
 
+def refresh_data():
+    st.button("Update Data")
+    if st.button:
+        get_tickets()
+
+
 def display_data():
     tab1, tab2 = st.tabs(["Tickets View", "Charts"])
     data, date = get_tickets()
     # data.set_index("tkt_number", inplace=True)
 
     with tab1:
-        st.subheader("A View For All Tickets")
+        st.subheader("All Tickets")
         st.write(f"Today's date is {date}")
         filtered_data = filter_dataframe(data)
         styled_data = filtered_data.style.map(style_data_row, subset=["status"])
@@ -154,3 +160,6 @@ def display_data():
         st.write(f"Today's date is {date}")
         df2 = pd.DataFrame(data.offence_type.value_counts()).reset_index()
         st.bar_chart(df2, x="offence_type", y="count")
+
+    with tab1:
+        refresh_data()

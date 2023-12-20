@@ -60,7 +60,6 @@ def check_password():
             ]
             del st.session_state["password"]  # Don't store the username or password.
             st.session_state.session_data["username"] = st.session_state["username"]
-            print(f"Names are {st.session_state.name}")
         else:
             st.session_state["password_correct"] = False
 
@@ -177,7 +176,6 @@ def run_program(logged_on_officer: str) -> dict:
     try:
         return my_df
     except UnboundLocalError as e:
-        # st.write("Logged out")
         st.stop()
         return
 
