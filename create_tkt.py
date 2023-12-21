@@ -78,25 +78,23 @@ if not check_password():
     st.stop()
 
 
-def get_offense_category() -> dict:
-    with open("offense_dictionary.json", "r") as f:
-        offense_dictionary = json.load(f)
-        return offense_dictionary
+## Added this for new offense df
+def get_offense_type(csv_file):
+    offense_df = pd.read_csv(csv_file).set_index("Description")
+    return offense_df
 
 
-def select_offence(offence_dict: dict) -> tuple:
-    # Use a select box for the offense
+def select_offense_df(df: pd.DataFrame):
     selected_offense = st.selectbox(
-        "Choose an offense to begin:",
-        options=list(offence_dict.keys()),
-        index=0,
+        "Choose an offense Description to start:",
+        options=list(df.index),
         placeholder="Choose option",
-        key="selected_offense",
     )
-    fine = offence_dict.get(f"{selected_offense}")
-    if fine != "":
-        st.write(f"${fine}")
-    return (selected_offense, fine)
+    if selected_offense is not None:
+        st.write("You selected: ", selected_offense)
+        fine_amount = df.loc[selected_offense]["Fine_Amount"].replace(",", "")
+        st.write(fine_amount)
+    return selected_offense, fine_amount
 
 
 def log_out():
@@ -107,7 +105,7 @@ def log_out():
 # Enter Form Details
 def create_offense() -> pd.DataFrame:
     # Get the offence info
-    offense, fine = select_offence(get_offense_category())
+    offense, fine = select_offense_df(get_offense_type("violations_list.csv"))
 
     # Input Offender Forms
     with st.form(key="offense_form", clear_on_submit=True):
